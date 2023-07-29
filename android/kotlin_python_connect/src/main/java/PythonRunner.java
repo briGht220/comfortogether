@@ -1,6 +1,8 @@
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 
 /**
  * Class for running python file and getting result
@@ -74,5 +76,26 @@ public class PythonRunner {
      */
     private BufferedReader readPythonRunResult(Process process) {
         return new BufferedReader(new InputStreamReader(process.getInputStream(), StandardCharsets.UTF_8));
+    }
+
+    public ArrayList<DetectedObject> getDetectedObject(BufferedReader bufferedReader) throws IOException {
+        ArrayList<DetectedObject> arrayList = new ArrayList<>();
+        String line;
+
+        while ((line = bufferedReader.readLine()) != null) {
+            String[] strings    = line.split(" ");
+            String[] coordinate = strings[2].split(",");
+            arrayList.add(
+                    new DetectedObject(
+                            strings[0],
+                            Integer.parseInt(strings[1]),
+                            Integer.parseInt(coordinate[0]),
+                            Integer.parseInt(coordinate[1]),
+                            Float.parseFloat(strings[3])
+                    )
+            );
+        }
+
+        return arrayList;
     }
 }
