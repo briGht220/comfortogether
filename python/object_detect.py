@@ -55,6 +55,18 @@ class DetectObject():
                 return label
         return None  # 만약 리스트에 일치하는 항목이 없으면 None 반환
 
+
+    def check_direction_and_roi(self, image, x1, y1, weight, height):
+        img_h, img_w = image.shape[:2]
+        x2 = x1 + weight
+        y2 = y1 + height
+
+        if img_h//3 > y2 : #시야 내로 범위 제한, TODO
+            return None
+
+        return 1
+
+
     def post_process(self, input_image, outputs, classes):
         class_ids = []
         confidences = []
@@ -90,21 +102,23 @@ class DetectObject():
 
         for i in indices:
             box = boxes[i]
-            left = box[0]
-            top = box[1]
-            width = box[2]
-            height = box[3]             
+            left = box[0] #x1
+            top = box[1] #y1
+            width = box[2] #x2 = width + left
+            height = box[3] #y2 = height + top             
             
             label = classes[class_ids[i]]
             #label = "{}:{:.2f}".format(classes[class_ids[i]], confidences[i])             
 
             result = self.need_label(label)  #장애물에 해당이 된다면 class_id를 아니면 None
+            
+            ## visualize ##
             if result is not None :
-                cv2.rectangle(input_image, (left, top), (left + width, top + height), self.BLUE, 3*self.THICKNESS)
-                self.draw_label(input_image, result, left, top)
-            
-            
-                
+                signal = self.check_direction_and_roi(input_image, left, top, width, height)
+                if signal is not None :
+                    cv2.rectangle(input_image, (left, top), (left + width, top + height), self.BLUE, 3*self.THICKNESS)
+                    self.draw_label(input_image, result, left, top)
+
         return input_image, result      
 
             
