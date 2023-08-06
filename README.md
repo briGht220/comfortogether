@@ -26,7 +26,7 @@
 
 ## 개발환경
 
-- GPU 환경 :
+- GPU 환경 : RTX3060 TI (CUDA 11.8)
 - Collaboration tools : ASANA, Github
 - Development Tools : Visual Studio 2019, Jupyter Lab
 - Libraries & Frameworks : OpenCV, Pytorch
