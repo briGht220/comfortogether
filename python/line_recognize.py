@@ -30,7 +30,7 @@ class RecognizeLine() :
         mask = mask1+mask2
 
         edge = cv2.Canny(mask, 150, 300)
-        #cv2.imshow("1", edge); cv2.waitKey(0)
+        cv2.imshow("1", edge); cv2.waitKey(0)
 
         return edge
 
@@ -47,7 +47,7 @@ class RecognizeLine() :
             (int(w*(2/3)), int(h*(1/2))), (int(w*(8/9)), h),]], np.int32)
         cv2.fillPoly(mask, polygon, ignore_mask_color)
         masked_image = cv2.bitwise_and(image, mask)
-        #cv2.imshow("2", mask); cv2.waitKey(0)
+        cv2.imshow("2", mask); cv2.waitKey(0)
         return masked_image
 
     def DrawLines(self, image, lines, color = [0, 255, 0], thickness = 5) :
@@ -68,7 +68,7 @@ class RecognizeLine() :
         line_image = np.zeros((image.shape[0], image.shape[1], 3), dtype = np.uint8)
         signal = self.DrawLines(line_image, lines)
         if signal == 1 :
-            #cv2.imshow("3", line_image); cv2.waitKey(0)
+            cv2.imshow("3", line_image); cv2.waitKey(0)
             return 1, line_image
         else :
             return 0, 0
