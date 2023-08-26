@@ -4,7 +4,7 @@ import os
 
 class DetectMoving() :
     def __init__(self) :
-        self.thr = []
+        self.thr = 20
         self.difference = 40
 
     def read_images_with_extension(self, directory):
@@ -27,8 +27,8 @@ class DetectMoving() :
         diff_12 = cv2.abs(frame1, frame2)
         diff_23 = cv2.abs(frame2, frame3)
 
-        diff_12 = cv2.threshold(diff_12, thr, 255, cv2.THRESH_BINARY)[1]
-        diff_23 = cv2.threshold(diff_23, thr, 255, cv2.THRESH_BINARY)[1]
+        diff_12 = cv2.threshold(diff_12, self.thr, 255, cv2.THRESH_BINARY)[1]
+        diff_23 = cv2.threshold(diff_23, self.thr, 255, cv2.THRESH_BINARY)[1]
         
         diff = cv2.bitwise_and(diff_12, diff_23)
         kernel = cv2.getStructuringElement(cv2.MORPH_CROSS, (3, 3))
