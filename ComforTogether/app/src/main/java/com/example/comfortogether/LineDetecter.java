@@ -2,6 +2,7 @@ package com.example.comfortogether;
 
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.PorterDuff;
 import android.util.Log;
@@ -27,6 +28,7 @@ import java.util.List;
 public class LineDetecter {
     private boolean isInitialized = false;
     private static String tag = "OpenCV";
+    private Mat oldLines;
 
     public LineDetecter() {
         if (OpenCVLoader.initDebug()) {
@@ -70,5 +72,35 @@ public class LineDetecter {
         // 엣지를 비트맵으로 바꿔 반환
         Utils.matToBitmap(edge, bitmap);
         return bitmap;
+    }
+
+    public Boolean DrawLines(Mat image, Mat lines, Scalar color, float thickness) {
+        if (lines == this.oldLines ||
+            lines.empty())
+            return false;
+
+        this.oldLines = lines;
+        return true;
+    }
+
+    public Boolean HoughLines(Bitmap bitmap,
+                              double rho,
+                              double theta,
+                              int    threshold,
+                              double minLineLen,
+                              double maxLineGap) {
+        Mat image   = new Mat();
+        Mat lines   = new Mat();
+
+        Utils.bitmapToMat(bitmap, image);
+
+        Imgproc.HoughLinesP(image, lines, rho, theta, threshold,
+                            minLineLen, maxLineGap);
+
+        if (lines.empty())
+            return false;
+
+        Mat lineImg = new Mat(image.rows(), image.cols(), CvType.CV_8UC3);
+        return DrawLines(lineImg, lines, new Scalar(0, 255, 0), 5);
     }
 }
