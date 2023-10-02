@@ -6,15 +6,19 @@ import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.RectF;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.View;
 
 import com.example.comfortogether.PlayActivity;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 
 
 public class ResultView extends View {
+    
+    private boolean sound_is = false;
 
     PlayActivity playActivity = new PlayActivity();
     private final static int TEXT_X = 40;
@@ -38,17 +42,36 @@ public class ResultView extends View {
         mPaintText = new Paint();
     }
 
+    public void Sound_swich(){
+        this.sound_is = !sound_is;
+    }
+
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
 
         if (mResults == null) return;
+        int person_3check = 0;
+        for (int i=0;i<mResults.size();i++){
+            if(PrePostProcessor.mClasses[mResults.get(i).classIndex].equals("person")){
+                person_3check++;
+            }
+        }
+
         for (Result result : mResults) {
 
             if (Arrays.asList(labelFilter).contains(PrePostProcessor.mClasses[result.classIndex]) == false)
                 continue;
 
-            playActivity.tts_label(PrePostProcessor.mClasses[result.classIndex]);
+            if(PrePostProcessor.mClasses[result.classIndex].contains("person")){
+                if(person_3check >= 3) {
+                    playActivity.tts_label(PrePostProcessor.mClasses[result.classIndex],this.sound_is);
+                }
+            }else{
+                playActivity.tts_label(PrePostProcessor.mClasses[result.classIndex],this.sound_is);
+            }
+
+
 
             mPaintRectangle.setStrokeWidth(5);
             mPaintRectangle.setStyle(Paint.Style.STROKE);
